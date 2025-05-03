@@ -28,13 +28,8 @@ func main() {
 
 	handler.InitRoutes(r, customerHandler)
 
-	port := cfg.APIPort
-	if port == "" {
-		port = "3000"
-	}
-
-	log.Printf("Server starting on port %s", port)
-	if err := r.Run(":" + port); err != nil {
+	log.Printf("Server starting on port %s", cfg.APIPort)
+	if err := r.Run(":" + cfg.APIPort); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
