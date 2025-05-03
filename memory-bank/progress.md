@@ -1,30 +1,29 @@
-# Progress
+# Project Progress
 
 ## What Works
-- Memory bank documentation structure
-- Go/PostgreSQL development environment
-- Migration setup and execution
-- Core architecture patterns established
+1. All CRUD operations are implemented (including the newly added GET /customers)
+2. Clean Architecture layers are properly separated and functioning
+3. Database integration with PostgreSQL is working correctly
+4. API endpoints are accessible and returning appropriate responses
+5. Dependency injection is properly implemented
 
 ## What's Left to Build
-- Domain layer interfaces and entities
-- Goods tracking service implementation
-- API routing and handler functions
-- Database schema synchronization
-- Integration tests
+1. Input validation for all endpoints
+2. Error handling middleware for consistent error responses
+3. Structured logging implementation
+4. Unit tests for all layers (handler, usecase, repository)
+5. Documentation for API endpoints
 
 ## Current Status
-Initial setup complete, documentation established
-Active development phase preparation
+The core functionality for customer management is complete and working. The system follows Clean Architecture principles with proper separation of concerns. All database interactions are encapsulated in the repository layer, business logic is handled in the usecase layer, and HTTP routing is managed in the handler layer.
 
 ## Known Issues
-- No implemented services yet
-- Missing API endpoint definitions
-- Database schema not yet applied
-- No test coverage established
+1. No comprehensive error handling middleware yet
+2. Lack of structured logging implementation
+3. No input validation for API endpoints
+4. Missing unit tests for verification
 
-## Evolution of Project Decisions
-- Hexagonal architecture interfaces in /core
-- SQL migrations in /migrations
-- Service implementations in /services
-- Context-based documentation structure implemented
+## Evolution of Decisions
+1. Decided to use singular table names in database queries to match actual schema
+2. Maintained thin handler layer to ensure business logic remains in usecase layer
+3. Implemented interface-based design for better testability and loose coupling
