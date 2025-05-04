@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Work Focus
-Implementation of customer management API with full CRUD operations following Clean Architecture principles.
+Implementation of customer and supplier management APIs with full CRUD operations following Clean Architecture principles.
 
 ## Recent Changes
 1. Implemented unit tests for customer_usecase.go using Uber's GoMock
@@ -10,6 +10,9 @@ Implementation of customer management API with full CRUD operations following Cl
 4. Achieved 100% test coverage for usecase layer
 5. Implemented comprehensive unit tests for customer_handler.go with table-driven tests
 6. Implemented unit tests for customer_repository.go using go-sqlmock
+7. Implemented complete CRUD API for supplier management following the same architecture
+8. Added unit tests for supplier across all layers (repository, usecase, handler)
+9. Updated router to include supplier endpoints
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer

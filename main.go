@@ -26,7 +26,11 @@ func main() {
 	customerUsecase := usecase.NewCustomerUsecase(customerRepo)
 	customerHandler := handler.NewCustomerHandler(customerUsecase)
 
-	handler.InitRoutes(r, customerHandler)
+	supplierRepo := repository.NewSupplierRepository(db)
+	supplierUsecase := usecase.NewSupplierUsecase(supplierRepo)
+	supplierHandler := handler.NewSupplierHandler(supplierUsecase)
+
+	handler.InitRoutes(r, customerHandler, supplierHandler)
 
 	log.Printf("Server starting on port %s", cfg.APIPort)
 	if err := r.Run(":" + cfg.APIPort); err != nil {

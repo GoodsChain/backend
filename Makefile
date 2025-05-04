@@ -28,6 +28,8 @@ run:
 mock:
 	mockgen -destination=mock/customer_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CustomerRepository
 	mockgen -destination=mock/customer_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase CustomerUsecase
+	mockgen -destination=mock/supplier_repository_mock.go -package=mock github.com/GoodsChain/backend/repository SupplierRepository
+	mockgen -destination=mock/supplier_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase SupplierUsecase
 
 test:
 	go test -v -cover ./... -count=1
