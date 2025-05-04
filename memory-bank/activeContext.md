@@ -9,10 +9,11 @@ Implementation of customer management API with full CRUD operations following Cl
 3. Created new Makefile commands for mock generation and test execution
 4. Achieved 100% test coverage for usecase layer
 5. Implemented comprehensive unit tests for customer_handler.go with table-driven tests
+6. Implemented unit tests for customer_repository.go using go-sqlmock
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
-2. Implement unit tests for repository layer
+2. ✅ Implement unit tests for repository layer
 3. Add input validation for all endpoints
 4. Implement error handling middleware
 5. Add structured logging implementation
@@ -23,6 +24,7 @@ Implementation of customer management API with full CRUD operations following Cl
 3. Using interface-based design for loose coupling between layers
 4. Implementing dependency injection for testability
 5. Using Uber's GoMock for mocking dependencies in unit tests
+6. Using go-sqlmock for repository layer testing without requiring a real database
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -30,3 +32,4 @@ Implementation of customer management API with full CRUD operations following Cl
 3. Database interactions are properly encapsulated in repository layer
 4. API endpoints follow RESTful conventions with appropriate HTTP methods and status codes
 5. Usecase layer has complete test coverage demonstrating loose coupling with repository layer
+6. Repository tests verify SQL queries match implementation expectations
