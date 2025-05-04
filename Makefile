@@ -26,12 +26,8 @@ run:
 
 # Mock generation and testing targets
 mock:
-	mkdir -p mock
-	go install go.uber.org/mock/mockgen@latest
 	mockgen -destination=mock/customer_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CustomerRepository
+	mockgen -destination=mock/customer_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase CustomerUsecase
 
 test:
-	go test -v ./...
-
-test-coverage:
-	go test -v -cover ./...
+	go test -v -cover ./... -count=1

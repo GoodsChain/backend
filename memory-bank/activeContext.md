@@ -5,12 +5,13 @@ Implementation of customer management API with full CRUD operations following Cl
 
 ## Recent Changes
 1. Implemented unit tests for customer_usecase.go using Uber's GoMock
-2. Added mock generation for CustomerRepository interface
+2. Added mock generation for CustomerRepository and CustomerUsecase interfaces
 3. Created new Makefile commands for mock generation and test execution
 4. Achieved 100% test coverage for usecase layer
+5. Implemented comprehensive unit tests for customer_handler.go with table-driven tests
 
 ## Next Steps
-1. Implement unit tests for handler layer
+1. ✅ Implement unit tests for handler layer
 2. Implement unit tests for repository layer
 3. Add input validation for all endpoints
 4. Implement error handling middleware
