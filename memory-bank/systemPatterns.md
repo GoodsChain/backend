@@ -23,8 +23,27 @@ The system implements Clean Architecture principles with a clear separation of c
 2. **Interface-based Design** - Clear interfaces between layers for loose coupling
 3. **Error Handling** - Consistent error responses with appropriate HTTP status codes
 4. **Validation** - Input validation at handler layer before business logic execution
+5. **Graceful Shutdown** - Proper signal handling and resource cleanup during application termination
 
 ## Component Relationships
 - Handler depends on Usecase interfaces
 - Usecase implementation depends on Repository interfaces
 - Repository implementation depends on database driver
+
+## Server Lifecycle Management
+1. **Initialization**
+   - Configuration loading
+   - Database connection
+   - Dependency initialization and injection
+   - HTTP server configuration
+
+2. **Operation**
+   - Non-blocking server start using goroutines
+   - Signal handling for graceful termination
+
+3. **Termination**
+   - Dedicated function for graceful shutdown (handleGracefulShutdown)
+   - Signal-triggered shutdown (SIGINT, SIGTERM)
+   - Graceful shutdown with timeout for in-flight requests
+   - Ordered resource cleanup (HTTP server, database connections)
+   - Context cancellation for coordinated shutdown
