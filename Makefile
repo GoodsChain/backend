@@ -23,3 +23,15 @@ db-down:
 
 run:
 	go run main.go
+
+# Mock generation and testing targets
+mock:
+	mkdir -p mock
+	go install go.uber.org/mock/mockgen@latest
+	mockgen -destination=mock/customer_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CustomerRepository
+
+test:
+	go test -v ./...
+
+test-coverage:
+	go test -v -cover ./...
