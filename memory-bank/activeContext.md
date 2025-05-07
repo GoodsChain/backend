@@ -22,6 +22,13 @@ Implementation of customer and supplier management APIs with full CRUD operation
 16. Updated handler unit tests (`customer_handler_test.go`, `supplier_handler_test.go`) to cover various input validation scenarios (success, missing fields, invalid formats).
 17. Implemented a global error handling middleware (`handler.ErrorHandlingMiddleware`) to standardize JSON error responses.
 18. Implemented structured logging using `zerolog` library, including request logging (method, path, status, latency, IP) and error logging in the `ErrorHandlingMiddleware`. Logger is initialized in `main.go` via a new `logger` package, with log level configurable via `LOG_LEVEL` environment variable.
+19. Implemented API documentation using Swagger/OpenAPI with `swaggo`. This includes:
+    - Added `swaggo/gin-swagger`, `swaggo/files`, and `swaggo/swag` dependencies.
+    - Annotated `main.go` with general API information.
+    - Annotated model structs (`Customer`, `Supplier`, `ErrorResponse`, `SuccessResponse`) with examples and descriptions.
+    - Annotated handler functions in `customer_handler.go` and `supplier_handler.go` for all CRUD operations.
+    - Added a `/swagger/*any` route in `main.go` to serve the Swagger UI.
+    - Standardized error responses in handlers to use `model.ErrorResponse`.
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
@@ -30,7 +37,8 @@ Implementation of customer and supplier management APIs with full CRUD operation
 4. ✅ Add input validation for all endpoints
 5. ✅ Implement error handling middleware
 6. ✅ Add structured logging implementation
-7. Add documentation for API endpoints
+7. ✅ Add documentation for API endpoints
+8. All core features from project brief implemented. Awaiting new feature requests or refinements.
 
 ## Active Decisions
 1. Using singular table name 'customer' instead of 'customers' in database queries
@@ -45,6 +53,9 @@ Implementation of customer and supplier management APIs with full CRUD operation
 10. Using Gin's built-in validation (`ShouldBindJSON` with struct tags like `binding:"required,email"`) for request payload validation, ensuring data integrity at the entry point.
 11. Implemented a global error handling middleware to catch errors from `c.Errors` and format them as `{\"error\": \"message\"}`. It also attempts to provide a JSON response for 404s.
 12. Adopted `zerolog` for structured logging due to its performance and ease of use. Configured console output for development and made log level configurable via the `LOG_LEVEL` environment variable. Centralized request and error logging within the `ErrorHandlingMiddleware`.
+13. Adopted `swaggo/swag` and `swaggo/gin-swagger` for generating OpenAPI (Swagger) documentation due to its popularity and ease of integration with Gin.
+14. Standardized API documentation by annotating handlers, models, and main application entry point.
+15. Created common `model.ErrorResponse` and `model.SuccessResponse` structs for consistent API responses and Swagger documentation.
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -59,3 +70,5 @@ Implementation of customer and supplier management APIs with full CRUD operation
 10. Input validation is now implemented for customer and supplier creation/update endpoints, enhancing API robustness and data integrity by ensuring required fields are present and formats (like email) are correct before processing.
 11. The new error handling middleware centralizes error response formatting, improving API consistency and maintainability.
 12. Structured logging provides detailed, machine-readable logs for requests and errors, significantly improving observability and debugging capabilities.
+13. The addition of Swagger API documentation significantly improves the usability and discoverability of the API for developers and consumers.
+14. Standardized response models (`ErrorResponse`, `SuccessResponse`) enhance API consistency.

@@ -25,9 +25,14 @@
 - github.com/jmoiron/sqlx - Database interaction
 - github.com/google/uuid - UUID generation
 - github.com/lib/pq - PostgreSQL driver
+- github.com/rs/zerolog - Structured logging
+- github.com/swaggo/gin-swagger - Swagger UI for Gin
+- github.com/swaggo/files - Swagger UI static files
+- github.com/swaggo/swag - Swagger core library and CLI tool
 
 ## Tool Usage Patterns
 - `make run` - Start the development server
 - `go run main.go` - Directly run the application
+- `swag init` - Generate/update Swagger API documentation
 - Proper error handling with context propagation
-- Structured logging (not yet implemented)
+- Structured logging implemented using `zerolog`

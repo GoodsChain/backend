@@ -1,0 +1,387 @@
+basePath: /
+definitions:
+  model.Customer:
+    properties:
+      address:
+        example: 123 Main St, Anytown, USA
+        type: string
+      created_at:
+        example: "2023-01-15T10:30:00Z"
+        format: date-time
+        type: string
+      created_by:
+        example: system_user
+        type: string
+      email:
+        example: john.doe@example.com
+        type: string
+      id:
+        example: cust_01H7ZCN4X8X5X8X5X8X5X8X5X8
+        type: string
+      name:
+        example: John Doe
+        type: string
+      phone:
+        example: 555-123-4567
+        type: string
+      updated_at:
+        example: "2023-01-16T11:00:00Z"
+        format: date-time
+        type: string
+      updated_by:
+        example: system_user
+        type: string
+    required:
+    - address
+    - email
+    - name
+    type: object
+  model.ErrorResponse:
+    properties:
+      error:
+        example: Error message description
+        type: string
+    type: object
+  model.SuccessResponse:
+    properties:
+      message:
+        example: Operation successful
+        type: string
+    type: object
+  model.Supplier:
+    properties:
+      address:
+        example: 456 Industrial Rd, Factory City, USA
+        type: string
+      created_at:
+        example: "2023-02-10T09:15:00Z"
+        format: date-time
+        type: string
+      created_by:
+        example: system_user
+        type: string
+      email:
+        example: contact@supplierinc.com
+        type: string
+      id:
+        example: supp_01H7ZD00X8X5X8X5X8X5X8X5X8
+        type: string
+      name:
+        example: Supplier Inc.
+        type: string
+      phone:
+        example: 555-987-6543
+        type: string
+      updated_at:
+        example: "2023-02-11T14:45:00Z"
+        format: date-time
+        type: string
+      updated_by:
+        example: system_user
+        type: string
+    required:
+    - address
+    - email
+    - name
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: RESTful API for managing customer and supplier data in the GoodsChain
+    system.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: GoodsChain Backend System
+  version: "1.0"
+paths:
+  /customers:
+    get:
+      description: Retrieves a list of all customers in the system.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of customers
+          schema:
+            items:
+              $ref: '#/definitions/model.Customer'
+            type: array
+        "500":
+          description: Failed to retrieve customers
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all customers
+      tags:
+      - Customers
+    post:
+      consumes:
+      - application/json
+      description: Adds a new customer to the system. The ID is auto-generated if
+        not provided.
+      parameters:
+      - description: Customer object to be created
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/model.Customer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created customer
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Invalid request payload
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create a new customer
+      tags:
+      - Customers
+  /customers/{id}:
+    delete:
+      description: Deletes a customer from the system based on their unique ID.
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Customer deleted successfully
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "404":
+          description: Customer not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete a customer
+      tags:
+      - Customers
+    get:
+      description: Retrieves a customer's details based on their unique ID.
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved customer
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "404":
+          description: Customer not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get a customer by ID
+      tags:
+      - Customers
+    put:
+      consumes:
+      - application/json
+      description: Updates the details of an existing customer identified by their
+        ID.
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Customer object with updated details
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/model.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Customer updated successfully
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Customer not found (if ID in body differs or not found by usecase)
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update an existing customer
+      tags:
+      - Customers
+  /suppliers:
+    get:
+      description: Retrieves a list of all suppliers in the system.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of suppliers
+          schema:
+            items:
+              $ref: '#/definitions/model.Supplier'
+            type: array
+        "500":
+          description: Failed to retrieve suppliers
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get all suppliers
+      tags:
+      - Suppliers
+    post:
+      consumes:
+      - application/json
+      description: Adds a new supplier to the system. The ID is auto-generated if
+        not provided.
+      parameters:
+      - description: Supplier object to be created
+        in: body
+        name: supplier
+        required: true
+        schema:
+          $ref: '#/definitions/model.Supplier'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created supplier
+          schema:
+            $ref: '#/definitions/model.Supplier'
+        "400":
+          description: Invalid request payload
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Create a new supplier
+      tags:
+      - Suppliers
+  /suppliers/{id}:
+    delete:
+      description: Deletes a supplier from the system based on their unique ID.
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Supplier deleted successfully
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "404":
+          description: Supplier not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete a supplier
+      tags:
+      - Suppliers
+    get:
+      description: Retrieves a supplier's details based on their unique ID.
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved supplier
+          schema:
+            $ref: '#/definitions/model.Supplier'
+        "404":
+          description: Supplier not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get a supplier by ID
+      tags:
+      - Suppliers
+    put:
+      consumes:
+      - application/json
+      description: Updates the details of an existing supplier identified by their
+        ID.
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Supplier object with updated details
+        in: body
+        name: supplier
+        required: true
+        schema:
+          $ref: '#/definitions/model.Supplier'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Supplier updated successfully
+          schema:
+            $ref: '#/definitions/model.SuccessResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Supplier not found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update an existing supplier
+      tags:
+      - Suppliers
+schemes:
+- http
+- https
+swagger: "2.0"
