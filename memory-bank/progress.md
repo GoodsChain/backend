@@ -15,16 +15,16 @@
 12. HTTP server configured with appropriate timeouts
 13. Input validation for customer and supplier API request bodies (create/update) using Gin's built-in validator with struct tags.
 14. Global error handling middleware (`handler.ErrorHandlingMiddleware`) for standardized JSON error responses.
+15. Structured logging using `zerolog`, providing detailed request/response and error logs. Log level is configurable via environment variable.
 
 ## What's Left to Build
-1. Structured logging implementation
-2. Documentation for API endpoints
+1. Documentation for API endpoints
 
 ## Current Status
-The core functionality for both customer and supplier management is complete and working. The system follows Clean Architecture principles with proper separation of concerns. All database interactions are encapsulated in the repository layer, business logic is handled in the usecase layer, and HTTP routing is managed in the handler layer. All layers now have comprehensive unit tests with complete test coverage using appropriate testing strategies - table-driven tests for handlers, mocks for usecases, and go-sqlmock for repositories. Input validation has been added to the handler layer for create and update operations, ensuring that incoming data for customers and suppliers meets basic requirements (e.g., required fields, email format) before further processing. The supplier API implementation follows the same architectural patterns as the customer API, ensuring consistency across the codebase. The application now implements graceful shutdown, allowing in-flight requests to complete and resources to be properly released when the server receives termination signals. A global error handling middleware has been integrated to ensure consistent JSON responses for errors across the API.
+The core functionality for both customer and supplier management is complete and working. The system follows Clean Architecture principles with proper separation of concerns. All database interactions are encapsulated in the repository layer, business logic is handled in the usecase layer, and HTTP routing is managed in the handler layer. All layers now have comprehensive unit tests with complete test coverage using appropriate testing strategies - table-driven tests for handlers, mocks for usecases, and go-sqlmock for repositories. Input validation has been added to the handler layer for create and update operations, ensuring that incoming data for customers and suppliers meets basic requirements (e.g., required fields, email format) before further processing. The supplier API implementation follows the same architectural patterns as the customer API, ensuring consistency across the codebase. The application now implements graceful shutdown, allowing in-flight requests to complete and resources to be properly released when the server receives termination signals. A global error handling middleware has been integrated to ensure consistent JSON responses for errors across the API. Structured logging has been implemented using `zerolog`, enhancing observability with detailed request and error logs.
 
 ## Known Issues
-1. Lack of structured logging implementation
+No known critical issues.
 
 ## Evolution of Decisions
 1. Decided to use singular table names in database queries to match actual schema
@@ -40,3 +40,4 @@ The core functionality for both customer and supplier management is complete and
 11. Refactored graceful shutdown logic into a dedicated function to improve code organization and maintainability
 12. Adopted Gin's built-in validation mechanism (`ShouldBindJSON` with struct tags) for request payload validation, removing manual checks and standardizing validation logic.
 13. Implemented a global error handling middleware to centralize and standardize API error responses, improving consistency and maintainability.
+14. Chose `zerolog` for structured logging, configured for console output during development and with an environment variable (`LOG_LEVEL`) for controlling log verbosity. Integrated request and error logging into the `ErrorHandlingMiddleware`.

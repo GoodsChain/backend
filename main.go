@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,11 +15,16 @@ import (
 
 	"github.com/GoodsChain/backend/config"
 	"github.com/GoodsChain/backend/handler"
+	"github.com/GoodsChain/backend/logger" // New import
 	"github.com/GoodsChain/backend/repository"
 	"github.com/GoodsChain/backend/usecase"
+	"github.com/rs/zerolog/log" // New import for zerolog
 )
 
 func main() {
+	// Initialize logger
+	logger.InitLogger()
+
 	// Initialize application context that can be cancelled
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -33,7 +37,7 @@ func main() {
 	// Connect to database
 	db, err := connectDB(cfg)
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Fatal().Err(err).Msg("Failed to connect to database")
 	}
 
 	// Initialize repositories, usecases, and handlers
@@ -59,9 +63,9 @@ func main() {
 
 	// Start server in a goroutine so it doesn't block signal handling
 	go func() {
-		log.Printf("Server starting on port %s", cfg.APIPort)
+		log.Info().Msgf("Server starting on port %s", cfg.APIPort)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Failed to start server: %v", err)
+			log.Fatal().Err(err).Msg("Failed to start server")
 		}
 	}()
 
@@ -78,7 +82,7 @@ func handleGracefulShutdown(ctx context.Context, srv *http.Server, db *sqlx.DB) 
 
 	// Block until a signal is received
 	sig := <-quit
-	log.Printf("Received signal: %v. Shutting down server...", sig)
+	log.Info().Str("signal", sig.String()).Msg("Received signal. Shutting down server...")
 
 	// Create a deadline for server shutdown
 	shutdownCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
@@ -86,17 +90,17 @@ func handleGracefulShutdown(ctx context.Context, srv *http.Server, db *sqlx.DB) 
 
 	// Attempt graceful shutdown
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		log.Printf("Server forced to shutdown: %v", err)
+		log.Error().Err(err).Msg("Server forced to shutdown")
 	}
 
 	// Close database connection
-	log.Println("Closing database connection...")
+	log.Info().Msg("Closing database connection...")
 	if err := db.Close(); err != nil {
-		log.Printf("Error closing database connection: %v", err)
+		log.Error().Err(err).Msg("Error closing database connection")
 	}
-	log.Println("Database connection closed")
+	log.Info().Msg("Database connection closed")
 
-	log.Println("Server exited gracefully")
+	log.Info().Msg("Server exited gracefully")
 }
 
 func connectDB(cfg *config.Config) (*sqlx.DB, error) {

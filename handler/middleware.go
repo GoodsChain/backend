@@ -2,8 +2,10 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 // ErrorResponse represents a standardized error response.
@@ -13,47 +15,81 @@ type ErrorResponse struct {
 
 // ErrorHandlingMiddleware is a Gin middleware for centralized error handling.
 // It catches errors that occur during request processing and formats them into
-// a standardized JSON response.
+// a standardized JSON response. It also logs requests and errors.
 func ErrorHandlingMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Next() // Process request
+		start := time.Now()
+
+		// Process request
+		c.Next()
+
+		latency := time.Since(start)
+		statusCode := c.Writer.Status()
+		clientIP := c.ClientIP()
+		method := c.Request.Method
+		path := c.Request.URL.Path
+		userAgent := c.Request.UserAgent()
+
+		logEvent := log.Info() // Default to Info for successful requests
+		if statusCode >= 400 && statusCode < 500 {
+			logEvent = log.Warn()
+		} else if statusCode >= 500 {
+			logEvent = log.Error()
+		}
 
 		// After request processing, check for errors
 		if len(c.Errors) > 0 {
-			// For now, we take the last error.
-			// More sophisticated error handling can be added here,
-			// such as logging, distinguishing error types, etc.
 			err := c.Errors.Last()
+			// Log the error with more details
+			logEvent.Err(err.Err). // Use err.Err to get the actual error interface
+				Str("method", method).
+				Str("path", path).
+				Str("clientIP", clientIP).
+				Int("statusCode", statusCode).
+				Dur("latency", latency).
+				Str("userAgent", userAgent).
+				Msg("Request error")
 
-			// Determine the status code.
-			// If the error is of a type that has a status code, use it.
-			// Otherwise, default to 500 Internal Server Error.
-			// This part can be expanded to handle custom error types.
-			statusCode := http.StatusInternalServerError
-			if ginErr, ok := err.Err.(*gin.Error); ok {
-				if ginErr.IsType(gin.ErrorTypePublic) {
-					// For public errors, we might want to use a different status code
-					// or expose more details, but for now, we keep it simple.
-				}
+			// Determine the status code for the response.
+			// If a status code was set on the context previously (e.g. by c.AbortWithStatusJSON),
+			// and it's an error code, prefer that. Otherwise, default to 500.
+			responseStatusCode := http.StatusInternalServerError
+			if c.Writer.Status() >= 400 {
+				responseStatusCode = c.Writer.Status()
 			}
 			
-			// If a status code was set on the context previously (e.g. by c.AbortWithStatusJSON),
-			// and it's an error code, prefer that.
-			if c.Writer.Status() >= 400 {
-				statusCode = c.Writer.Status()
+			// Ensure the logged status code matches the response status code if it was an error
+			if statusCode < 400 { // If Gin didn't set an error status, but we have c.Errors
+				statusCode = responseStatusCode // Update statusCode for logging consistency
 			}
 
-			c.JSON(statusCode, ErrorResponse{Error: err.Error()})
+
+			c.JSON(responseStatusCode, ErrorResponse{Error: err.Error()})
 			return // Stop further processing if error handled
 		}
 
-		// If no errors, but status code indicates an error (e.g. 404 Not Found from router)
+		// Log the request
+		logEvent.
+			Str("method", method).
+			Str("path", path).
+			Str("clientIP", clientIP).
+			Int("statusCode", statusCode).
+			Dur("latency", latency).
+			Str("userAgent", userAgent).
+			Msg("Request processed")
+
+
+		// If no errors from c.Errors, but status code indicates an error (e.g. 404 Not Found from router)
 		// and no response has been written yet.
-		// This is a basic way to catch 404s that didn't hit a specific route handler
-		// and ensure they also get a JSON response.
-		// Note: Gin's default 404 handler might already send a plain text response.
-		// For full control, one might replace Gin's NoRoute handler.
-		if c.Writer.Status() == http.StatusNotFound && !c.Writer.Written() {
+		if statusCode == http.StatusNotFound && !c.Writer.Written() {
+			log.Warn().
+				Str("method", method).
+				Str("path", path).
+				Str("clientIP", clientIP).
+				Int("statusCode", statusCode).
+				Dur("latency", latency).
+				Str("userAgent", userAgent).
+				Msg("Resource not found (404)")
 			c.JSON(http.StatusNotFound, ErrorResponse{Error: "resource not found"})
 			return
 		}

@@ -21,6 +21,7 @@ Implementation of customer and supplier management APIs with full CRUD operation
 15. Removed redundant manual validation checks from handlers.
 16. Updated handler unit tests (`customer_handler_test.go`, `supplier_handler_test.go`) to cover various input validation scenarios (success, missing fields, invalid formats).
 17. Implemented a global error handling middleware (`handler.ErrorHandlingMiddleware`) to standardize JSON error responses.
+18. Implemented structured logging using `zerolog` library, including request logging (method, path, status, latency, IP) and error logging in the `ErrorHandlingMiddleware`. Logger is initialized in `main.go` via a new `logger` package, with log level configurable via `LOG_LEVEL` environment variable.
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
@@ -28,7 +29,8 @@ Implementation of customer and supplier management APIs with full CRUD operation
 3. ✅ Implement graceful shutdown
 4. ✅ Add input validation for all endpoints
 5. ✅ Implement error handling middleware
-6. Add structured logging implementation
+6. ✅ Add structured logging implementation
+7. Add documentation for API endpoints
 
 ## Active Decisions
 1. Using singular table name 'customer' instead of 'customers' in database queries
@@ -42,6 +44,7 @@ Implementation of customer and supplier management APIs with full CRUD operation
 9. Separating graceful shutdown logic into a dedicated function for better organization and maintainability
 10. Using Gin's built-in validation (`ShouldBindJSON` with struct tags like `binding:"required,email"`) for request payload validation, ensuring data integrity at the entry point.
 11. Implemented a global error handling middleware to catch errors from `c.Errors` and format them as `{\"error\": \"message\"}`. It also attempts to provide a JSON response for 404s.
+12. Adopted `zerolog` for structured logging due to its performance and ease of use. Configured console output for development and made log level configurable via the `LOG_LEVEL` environment variable. Centralized request and error logging within the `ErrorHandlingMiddleware`.
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -55,3 +58,4 @@ Implementation of customer and supplier management APIs with full CRUD operation
 9. Graceful shutdown is now modularized in a dedicated function improving code organization
 10. Input validation is now implemented for customer and supplier creation/update endpoints, enhancing API robustness and data integrity by ensuring required fields are present and formats (like email) are correct before processing.
 11. The new error handling middleware centralizes error response formatting, improving API consistency and maintainability.
+12. Structured logging provides detailed, machine-readable logs for requests and errors, significantly improving observability and debugging capabilities.
