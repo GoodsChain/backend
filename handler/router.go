@@ -4,6 +4,9 @@ import "github.com/gin-gonic/gin"
 
 // InitRoutes sets up all the routes
 func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHandler *SupplierHandler) {
+	// Register global error handling middleware
+	engine.Use(ErrorHandlingMiddleware())
+
 	customerGroup := engine.Group("/customers")
 	{
 		customerGroup.POST("/", customerHandler.CreateCustomer)
