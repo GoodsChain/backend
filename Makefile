@@ -32,6 +32,8 @@ mock:
 	mockgen -destination=mock/supplier_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase SupplierUsecase
 	mockgen -destination=mock/car_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CarRepository
 	mockgen -destination=mock/car_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase CarUsecase
+	mockgen -destination=mock/customer_car_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CustomerCarRepository
+	mockgen -destination=mock/customer_car_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase CustomerCarUsecase
 
 test:
 	go test -v -cover ./... -count=1

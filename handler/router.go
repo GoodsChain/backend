@@ -3,7 +3,8 @@ package handler
 import "github.com/gin-gonic/gin"
 
 // InitRoutes sets up all the routes
-func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHandler *SupplierHandler, carHandler *CarHandler) {
+func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHandler *SupplierHandler,
+	carHandler *CarHandler, customerCarHandler *CustomerCarHandler) {
 	// Register global error handling middleware
 	engine.Use(ErrorHandlingMiddleware())
 
@@ -14,6 +15,7 @@ func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHa
 		customerGroup.GET("/:id", customerHandler.GetCustomer)
 		customerGroup.PUT("/:id", customerHandler.UpdateCustomer)
 		customerGroup.DELETE("/:id", customerHandler.DeleteCustomer)
+		customerGroup.GET("/:customer_id/cars", customerCarHandler.GetByCustomerID)
 	}
 
 	supplierGroup := engine.Group("/suppliers")
@@ -32,5 +34,15 @@ func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHa
 		carGroup.GET("/:id", carHandler.GetCar)
 		carGroup.PUT("/:id", carHandler.UpdateCar)
 		carGroup.DELETE("/:id", carHandler.DeleteCar)
+		carGroup.GET("/:car_id/customers", customerCarHandler.GetByCarID)
+	}
+
+	customerCarGroup := engine.Group("/customer-cars")
+	{
+		customerCarGroup.POST("/", customerCarHandler.Create)
+		customerCarGroup.GET("/", customerCarHandler.GetAll)
+		customerCarGroup.GET("/:id", customerCarHandler.GetByID)
+		customerCarGroup.PUT("/:id", customerCarHandler.Update)
+		customerCarGroup.DELETE("/:id", customerCarHandler.Delete)
 	}
 }
