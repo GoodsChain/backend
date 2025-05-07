@@ -25,12 +25,6 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 		return
 	}
 
-	// Validate required fields
-	if customer.Name == "" || customer.Email == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Name and email are required"})
-		return
-	}
-
 	// Generate UUID if not provided
 	if customer.ID == "" {
 		customer.ID = uuid.New().String()

@@ -16,12 +16,16 @@ Implementation of customer and supplier management APIs with full CRUD operation
 10. Implemented graceful shutdown handling in main.go
 11. Added proper database connection cleanup during shutdown
 12. Configured HTTP server with appropriate timeouts
+13. Added validation tags to `model.Customer` and `model.Supplier` for required fields (Name, Address, Email) and email format.
+14. Updated `CreateCustomer` and `UpdateCustomer` handlers (and corresponding supplier handlers) to leverage Gin's `ShouldBindJSON` for automatic request body validation.
+15. Removed redundant manual validation checks from handlers.
+16. Updated handler unit tests (`customer_handler_test.go`, `supplier_handler_test.go`) to cover various input validation scenarios (success, missing fields, invalid formats).
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
 2. ✅ Implement unit tests for repository layer
 3. ✅ Implement graceful shutdown
-4. Add input validation for all endpoints
+4. ✅ Add input validation for all endpoints
 5. Implement error handling middleware
 6. Add structured logging implementation
 
@@ -35,6 +39,7 @@ Implementation of customer and supplier management APIs with full CRUD operation
 7. Implementing graceful shutdown with a 30-second timeout for server shutdown
 8. Using goroutines for non-blocking server startup to allow signal handling
 9. Separating graceful shutdown logic into a dedicated function for better organization and maintainability
+10. Using Gin's built-in validation (`ShouldBindJSON` with struct tags like `binding:"required,email"`) for request payload validation, ensuring data integrity at the entry point.
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -46,3 +51,4 @@ Implementation of customer and supplier management APIs with full CRUD operation
 7. Server implements proper graceful shutdown allowing in-flight requests to complete
 8. Resource cleanup is handled properly during shutdown (database connections)
 9. Graceful shutdown is now modularized in a dedicated function improving code organization
+10. Input validation is now implemented for customer and supplier creation/update endpoints, enhancing API robustness and data integrity by ensuring required fields are present and formats (like email) are correct before processing.

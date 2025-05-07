@@ -25,12 +25,6 @@ func (h *SupplierHandler) CreateSupplier(c *gin.Context) {
 		return
 	}
 
-	// Validate required fields
-	if supplier.Name == "" || supplier.Email == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Name and email are required"})
-		return
-	}
-
 	// Generate UUID if not provided
 	if supplier.ID == "" {
 		supplier.ID = uuid.New().String()

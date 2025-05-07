@@ -31,8 +31,9 @@ func TestCreateSupplier(t *testing.T) {
 		{
 			name: "Success",
 			reqBody: map[string]interface{}{
-				"name":  "Test Supplier",
-				"email": "supplier@example.com",
+				"name":    "Test Supplier",
+				"email":   "supplier@example.com",
+				"address": "456 Supplier Ave",
 			},
 			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
 				mockUsecase.EXPECT().
@@ -44,23 +45,56 @@ func TestCreateSupplier(t *testing.T) {
 			expectedStatus: http.StatusCreated,
 		},
 		{
-			name: "Missing Required Fields",
+			name: "Missing Name Field",
 			reqBody: map[string]interface{}{
-				"name": "Test Supplier",
+				"email":   "supplier@example.com",
+				"address": "456 Supplier Ave",
 			},
 			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
 				// No mock calls expected
 			},
 			expectedStatus: http.StatusBadRequest,
-			expectedBody: gin.H{
-				"error": "Name and email are required",
+		},
+		{
+			name: "Missing Email Field",
+			reqBody: map[string]interface{}{
+				"name":    "Test Supplier",
+				"address": "456 Supplier Ave",
 			},
+			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
+				// No mock calls expected
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Missing Address Field",
+			reqBody: map[string]interface{}{
+				"name":  "Test Supplier",
+				"email": "supplier@example.com",
+			},
+			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
+				// No mock calls expected
+			},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name: "Invalid Email Format",
+			reqBody: map[string]interface{}{
+				"name":    "Test Supplier",
+				"email":   "not-a-valid-email",
+				"address": "456 Supplier Ave",
+			},
+			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
+				// No mock calls expected
+			},
+			expectedStatus: http.StatusBadRequest,
 		},
 		{
 			name: "Usecase Error",
 			reqBody: map[string]interface{}{
-				"name":  "Test Supplier",
-				"email": "supplier@example.com",
+				"name":    "Test Supplier",
+				"email":   "supplier@example.com",
+				"address": "456 Supplier Ave",
 			},
 			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
 				mockUsecase.EXPECT().
@@ -112,13 +146,22 @@ func TestCreateSupplier(t *testing.T) {
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
 
-				expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
-				var expectedBodyMap map[string]interface{}
-				json.Unmarshal(expectedBodyBytes, &expectedBodyMap)
+				if tt.expectedStatus == http.StatusBadRequest {
+					assert.Contains(t, gotBody, "error", "Error key missing for BadRequest")
+				} else {
+					expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
+					var expectedBodyMap map[string]interface{}
+					json.Unmarshal(expectedBodyBytes, &expectedBodyMap)
 
-				for k, v := range expectedBodyMap {
-					assert.Equal(t, v, gotBody[k])
+					for k, v := range expectedBodyMap {
+						assert.Equal(t, v, gotBody[k])
+					}
 				}
+			} else if tt.expectedStatus == http.StatusBadRequest {
+				var gotBody map[string]interface{}
+				json.Unmarshal(w.Body.Bytes(), &gotBody)
+				assert.Contains(t, gotBody, "error", "Error key missing for BadRequest without specific body")
+				assert.NotEmpty(t, gotBody["error"], "Error message should not be empty for BadRequest")
 			}
 		})
 	}
@@ -233,8 +276,9 @@ func TestUpdateSupplier(t *testing.T) {
 			name:       "Success",
 			supplierID: "supplier-id",
 			reqBody: map[string]interface{}{
-				"name":  "Updated Supplier",
-				"email": "updated@example.com",
+				"name":    "Updated Supplier",
+				"email":   "updated@example.com",
+				"address": "789 New Supplier Ave",
 			},
 			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
 				mockUsecase.EXPECT().
@@ -247,11 +291,33 @@ func TestUpdateSupplier(t *testing.T) {
 			},
 		},
 		{
+			name:       "Validation Error - Missing Name",
+			supplierID: "supplier-id",
+			reqBody: map[string]interface{}{
+				"email":   "updated@example.com",
+				"address": "789 New Supplier Ave",
+			},
+			mockSetup:      func(mockUsecase *mock.MockSupplierUsecase) {},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:       "Validation Error - Invalid Email",
+			supplierID: "supplier-id",
+			reqBody: map[string]interface{}{
+				"name":    "Updated Supplier",
+				"email":   "invalid-email-format",
+				"address": "789 New Supplier Ave",
+			},
+			mockSetup:      func(mockUsecase *mock.MockSupplierUsecase) {},
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
 			name:       "Usecase Error",
 			supplierID: "supplier-id",
 			reqBody: map[string]interface{}{
-				"name":  "Updated Supplier",
-				"email": "updated@example.com",
+				"name":    "Updated Supplier",
+				"email":   "updated@example.com",
+				"address": "789 New Supplier Ave",
 			},
 			mockSetup: func(mockUsecase *mock.MockSupplierUsecase) {
 				mockUsecase.EXPECT().
@@ -299,15 +365,24 @@ func TestUpdateSupplier(t *testing.T) {
 			assert.Equal(t, tt.expectedStatus, w.Code)
 
 			// Check response body
-			var gotBody map[string]interface{}
-			json.Unmarshal(w.Body.Bytes(), &gotBody)
-
-			expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
-			var expectedBodyMap map[string]interface{}
-			json.Unmarshal(expectedBodyBytes, &expectedBodyMap)
-
-			for k, v := range expectedBodyMap {
-				assert.Equal(t, v, gotBody[k])
+			if tt.expectedBody != nil {
+				var gotBody map[string]interface{}
+				json.Unmarshal(w.Body.Bytes(), &gotBody)
+				if tt.expectedStatus == http.StatusBadRequest {
+					assert.Contains(t, gotBody, "error", "Error key missing for BadRequest")
+				} else {
+					expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
+					var expectedBodyMap map[string]interface{}
+					json.Unmarshal(expectedBodyBytes, &expectedBodyMap)
+					for k, v := range expectedBodyMap {
+						assert.Equal(t, v, gotBody[k])
+					}
+				}
+			} else if tt.expectedStatus == http.StatusBadRequest {
+				var gotBody map[string]interface{}
+				json.Unmarshal(w.Body.Bytes(), &gotBody)
+				assert.Contains(t, gotBody, "error", "Error key missing for BadRequest without specific body")
+				assert.NotEmpty(t, gotBody["error"], "Error message should not be empty for BadRequest")
 			}
 		})
 	}
