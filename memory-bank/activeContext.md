@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Work Focus
-Implementation of customer and supplier management APIs with full CRUD operations following Clean Architecture principles.
+Implementation of customer, supplier, and car management APIs with full CRUD operations following Clean Architecture principles.
 
 ## Recent Changes
 1. Implemented unit tests for customer_usecase.go using Uber's GoMock
@@ -29,6 +29,15 @@ Implementation of customer and supplier management APIs with full CRUD operation
     - Annotated handler functions in `customer_handler.go` and `supplier_handler.go` for all CRUD operations.
     - Added a `/swagger/*any` route in `main.go` to serve the Swagger UI.
     - Standardized error responses in handlers to use `model.ErrorResponse`.
+20. Implemented CRUD APIs for Car management. This involved:
+    - Defining the `Car` model (`model/car.go`) based on the existing database schema.
+    - Implementing `CarRepository` (`repository/car_repository.go`) with PostgreSQL logic and unit tests (`repository/car_repository_test.go`) using `go-sqlmock`.
+    - Implementing `CarUsecase` (`usecase/car_usecase.go`) with business logic and unit tests (`usecase/car_usecase_test.go`) using `MockCarRepository`.
+    - Implementing `CarHandler` (`handler/car_handler.go`) with Gin handlers, Swagger annotations, and unit tests (`handler/car_handler_test.go`) using `MockCarUsecase`.
+    - Generating mocks for `CarRepository` and `CarUsecase` and updating the `Makefile`.
+    - Adding car routes to `handler/router.go`.
+    - Integrating car components into `main.go`.
+    - Updating Swagger documentation with `swag init`.
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
@@ -38,7 +47,9 @@ Implementation of customer and supplier management APIs with full CRUD operation
 5. ✅ Implement error handling middleware
 6. ✅ Add structured logging implementation
 7. ✅ Add documentation for API endpoints
-8. All core features from project brief implemented. Awaiting new feature requests or refinements.
+8. ✅ All core features from project brief implemented.
+9. ✅ Implemented Car CRUD API as per new request.
+10. Awaiting new feature requests or refinements.
 
 ## Active Decisions
 1. Using singular table name 'customer' instead of 'customers' in database queries
@@ -56,6 +67,7 @@ Implementation of customer and supplier management APIs with full CRUD operation
 13. Adopted `swaggo/swag` and `swaggo/gin-swagger` for generating OpenAPI (Swagger) documentation due to its popularity and ease of integration with Gin.
 14. Standardized API documentation by annotating handlers, models, and main application entry point.
 15. Created common `model.ErrorResponse` and `model.SuccessResponse` structs for consistent API responses and Swagger documentation.
+16. Ensured new Car CRUD API implementation followed the same Clean Architecture patterns, testing strategies, and error handling conventions established for Customer and Supplier APIs.
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -72,3 +84,4 @@ Implementation of customer and supplier management APIs with full CRUD operation
 12. Structured logging provides detailed, machine-readable logs for requests and errors, significantly improving observability and debugging capabilities.
 13. The addition of Swagger API documentation significantly improves the usability and discoverability of the API for developers and consumers.
 14. Standardized response models (`ErrorResponse`, `SuccessResponse`) enhance API consistency.
+15. The established Clean Architecture and modular design facilitated the addition of new CRUD APIs (e.g., for Car) with relative ease and consistency.

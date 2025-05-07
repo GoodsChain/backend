@@ -69,8 +69,12 @@ func main() {
 	supplierUsecase := usecase.NewSupplierUsecase(supplierRepo)
 	supplierHandler := handler.NewSupplierHandler(supplierUsecase)
 
+	carRepo := repository.NewCarRepository(db)
+	carUsecase := usecase.NewCarUsecase(carRepo)
+	carHandler := handler.NewCarHandler(carUsecase)
+
 	// Initialize routes
-	handler.InitRoutes(r, customerHandler, supplierHandler)
+	handler.InitRoutes(r, customerHandler, supplierHandler, carHandler)
 
 	// Configure HTTP server with reasonable timeouts
 	srv := &http.Server{

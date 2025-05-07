@@ -3,7 +3,7 @@ package handler
 import "github.com/gin-gonic/gin"
 
 // InitRoutes sets up all the routes
-func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHandler *SupplierHandler) {
+func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHandler *SupplierHandler, carHandler *CarHandler) {
 	// Register global error handling middleware
 	engine.Use(ErrorHandlingMiddleware())
 
@@ -23,5 +23,14 @@ func InitRoutes(engine *gin.Engine, customerHandler *CustomerHandler, supplierHa
 		supplierGroup.GET("/:id", supplierHandler.GetSupplier)
 		supplierGroup.PUT("/:id", supplierHandler.UpdateSupplier)
 		supplierGroup.DELETE("/:id", supplierHandler.DeleteSupplier)
+	}
+
+	carGroup := engine.Group("/cars")
+	{
+		carGroup.POST("/", carHandler.CreateCar)
+		carGroup.GET("/", carHandler.GetAllCars)
+		carGroup.GET("/:id", carHandler.GetCar)
+		carGroup.PUT("/:id", carHandler.UpdateCar)
+		carGroup.DELETE("/:id", carHandler.DeleteCar)
 	}
 }
