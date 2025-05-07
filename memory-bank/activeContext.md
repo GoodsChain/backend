@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Work Focus
-Implementation of customer, supplier, and car management APIs with full CRUD operations following Clean Architecture principles.
+Implementation of customer, supplier, car, and customer-car management APIs with full CRUD operations following Clean Architecture principles.
 
 ## Recent Changes
 1. Implemented unit tests for customer_usecase.go using Uber's GoMock
@@ -38,6 +38,17 @@ Implementation of customer, supplier, and car management APIs with full CRUD ope
     - Adding car routes to `handler/router.go`.
     - Integrating car components into `main.go`.
     - Updating Swagger documentation with `swag init`.
+21. Implemented CRUD APIs for CustomerCar (many-to-many relationship) management. This involved:
+    - Defining the `CustomerCar` model in `model/customer_car.go` to represent the customer-car relationship
+    - Implementing `CustomerCarRepository` in `repository/customer_car_repository.go` with methods for Create, GetByID, GetAll, GetByCustomerID, GetByCarID, Update, and Delete
+    - Implementing `CustomerCarUsecase` in `usecase/customer_car_usecase.go` with business logic including UUID generation
+    - Creating `CustomerCarHandler` in `handler/customer_car_handler.go` with RESTful endpoints and Swagger documentation
+    - Generating mocks for `CustomerCarRepository` and `CustomerCarUsecase` interfaces
+    - Adding specialized endpoints in `router.go` for:
+      - `/customer-cars` - standard CRUD operations for the relationship
+      - `/customers/:customer_id/cars` - retrieving cars by customer ID
+      - `/cars/:car_id/customers` - retrieving customers by car ID
+    - Updating `main.go` to initialize and connect the customer-car components
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
@@ -49,7 +60,9 @@ Implementation of customer, supplier, and car management APIs with full CRUD ope
 7. ✅ Add documentation for API endpoints
 8. ✅ All core features from project brief implemented.
 9. ✅ Implemented Car CRUD API as per new request.
-10. Awaiting new feature requests or refinements.
+10. ✅ Implemented CustomerCar CRUD API for managing the many-to-many relationship between customers and cars.
+11. Awaiting new feature requests or refinements.
+12. Consider implementing unit tests for the CustomerCar components.
 
 ## Active Decisions
 1. Using singular table name 'customer' instead of 'customers' in database queries
@@ -68,6 +81,7 @@ Implementation of customer, supplier, and car management APIs with full CRUD ope
 14. Standardized API documentation by annotating handlers, models, and main application entry point.
 15. Created common `model.ErrorResponse` and `model.SuccessResponse` structs for consistent API responses and Swagger documentation.
 16. Ensured new Car CRUD API implementation followed the same Clean Architecture patterns, testing strategies, and error handling conventions established for Customer and Supplier APIs.
+17. For the CustomerCar relationship, created specialized endpoints to easily retrieve cars by customer ID and customers by car ID, improving API usability.
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -85,3 +99,5 @@ Implementation of customer, supplier, and car management APIs with full CRUD ope
 13. The addition of Swagger API documentation significantly improves the usability and discoverability of the API for developers and consumers.
 14. Standardized response models (`ErrorResponse`, `SuccessResponse`) enhance API consistency.
 15. The established Clean Architecture and modular design facilitated the addition of new CRUD APIs (e.g., for Car) with relative ease and consistency.
+16. The implementation of the CustomerCar module demonstrated how to handle many-to-many relationships in a Clean Architecture context, with clear separation of concerns and a focus on relation-specific operations (GetByCustomerID, GetByCarID).
+17. The routing design provides both entity-centric access (through the `/customer-cars` endpoints) and relationship-centric access (through `/customers/:customer_id/cars` and `/cars/:car_id/customers`), offering flexibility in how data can be retrieved.
