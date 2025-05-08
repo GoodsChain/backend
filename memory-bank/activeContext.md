@@ -49,6 +49,14 @@ Implementation of customer, supplier, car, and customer-car management APIs with
       - `/customers/:customer_id/cars` - retrieving cars by customer ID
       - `/cars/:car_id/customers` - retrieving customers by car ID
     - Updating `main.go` to initialize and connect the customer-car components
+22. Created comprehensive README.md with:
+    - Project overview and features
+    - Architecture explanation
+    - Complete API endpoint documentation
+    - Technology stack details
+    - Setup and configuration instructions
+    - Testing procedures overview
+    - Project structure documentation
 
 ## Next Steps
 1. ✅ Implement unit tests for handler layer
@@ -61,8 +69,9 @@ Implementation of customer, supplier, car, and customer-car management APIs with
 8. ✅ All core features from project brief implemented.
 9. ✅ Implemented Car CRUD API as per new request.
 10. ✅ Implemented CustomerCar CRUD API for managing the many-to-many relationship between customers and cars.
-11. Awaiting new feature requests or refinements.
-12. Consider implementing unit tests for the CustomerCar components.
+11. ✅ Created comprehensive project README.md
+12. Awaiting new feature requests or refinements.
+13. Consider implementing unit tests for the CustomerCar components.
 
 ## Active Decisions
 1. Using singular table name 'customer' instead of 'customers' in database queries
@@ -82,6 +91,7 @@ Implementation of customer, supplier, car, and customer-car management APIs with
 15. Created common `model.ErrorResponse` and `model.SuccessResponse` structs for consistent API responses and Swagger documentation.
 16. Ensured new Car CRUD API implementation followed the same Clean Architecture patterns, testing strategies, and error handling conventions established for Customer and Supplier APIs.
 17. For the CustomerCar relationship, created specialized endpoints to easily retrieve cars by customer ID and customers by car ID, improving API usability.
+18. Created a comprehensive README.md with detailed documentation on architecture, endpoints, technologies, and setup instructions to improve project usability and onboarding experience.
 
 ## Project Insights
 1. Current implementation follows Clean Architecture with clear separation of concerns
@@ -101,3 +111,4 @@ Implementation of customer, supplier, car, and customer-car management APIs with
 15. The established Clean Architecture and modular design facilitated the addition of new CRUD APIs (e.g., for Car) with relative ease and consistency.
 16. The implementation of the CustomerCar module demonstrated how to handle many-to-many relationships in a Clean Architecture context, with clear separation of concerns and a focus on relation-specific operations (GetByCustomerID, GetByCarID).
 17. The routing design provides both entity-centric access (through the `/customer-cars` endpoints) and relationship-centric access (through `/customers/:customer_id/cars` and `/cars/:car_id/customers`), offering flexibility in how data can be retrieved.
+18. The comprehensive README.md now serves as an entry point to the project, providing clear documentation on system capabilities, architecture, setup instructions, and API usage, which will significantly improve developer onboarding and project maintainability.

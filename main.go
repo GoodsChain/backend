@@ -34,7 +34,7 @@ import (
 // @contact.email support@swagger.io
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:8080
+// @host localhost:3000
 // @BasePath /
 // @schemes http https
 func main() {
@@ -72,7 +72,7 @@ func main() {
 	carRepo := repository.NewCarRepository(db)
 	carUsecase := usecase.NewCarUsecase(carRepo)
 	carHandler := handler.NewCarHandler(carUsecase)
-	
+
 	// Initialize customer car repository, usecase, and handler
 	customerCarRepo := repository.NewCustomerCarRepository(db)
 	customerCarUsecase := usecase.NewCustomerCarUsecase(customerCarRepo)
