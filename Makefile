@@ -1,13 +1,11 @@
 -include .env
 
-# Database migration targets
 migrate-up:
 	migrate -path migrations -database "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSL_MODE)" up
 
 migrate-down:
 	migrate -path migrations -database "postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSL_MODE)" down
 
-# Database container targets
 db:
 	docker run --name goodschain-db \
 		-e POSTGRES_USER=$(DB_USER) \
@@ -27,8 +25,10 @@ run:
 build:
 	go build -o goodschain main.go
 
-# Mock generation and testing targets
-mock:
+mock-clean:
+	rm -rf mock
+
+mock: mock-clean
 	mockgen -destination=mock/customer_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CustomerRepository
 	mockgen -destination=mock/customer_usecase_mock.go -package=mock github.com/GoodsChain/backend/usecase CustomerUsecase
 	mockgen -destination=mock/supplier_repository_mock.go -package=mock github.com/GoodsChain/backend/repository SupplierRepository
