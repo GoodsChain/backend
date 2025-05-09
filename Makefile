@@ -24,6 +24,9 @@ db-down:
 run:
 	go run main.go
 
+build:
+	go build -o goodschain main.go
+
 # Mock generation and testing targets
 mock:
 	mockgen -destination=mock/customer_repository_mock.go -package=mock github.com/GoodsChain/backend/repository CustomerRepository
