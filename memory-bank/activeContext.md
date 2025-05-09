@@ -62,3 +62,4 @@ We've recently enhanced the GoodsChain backend system with several key improveme
 - Value of comprehensive configuration with sensible defaults
 - Importance of API versioning for long-term maintenance
 - Benefits of graceful shutdown with configurable timeouts
+- Implemented GitHub Actions for CI/CD, specifically for building and testing the project using Makefile commands.

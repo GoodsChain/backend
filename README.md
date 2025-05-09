@@ -21,6 +21,7 @@ GoodsChain Backend is a Go-based RESTful API service that provides comprehensive
 - **Comprehensive Testing**: Unit tests with high coverage across all layers
 - **Structured Error Handling**: Consistent error responses with error codes
 - **Request Tracking**: Request IDs for tracing requests through logs
+- **CI/CD**: GitHub Actions workflow for automated build and test
 - **Connection Pooling**: Configurable database connection pool
 - **API Versioning**: Versioned API endpoints for backward compatibility
 - **Health Check Endpoint**: Dedicated endpoint for monitoring service health
