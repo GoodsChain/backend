@@ -75,7 +75,8 @@ func TestCustomerCarCreate(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "database error",
+				"code": "internal_error",
+				"message": "database error",
 			},
 		},
 	}
@@ -121,7 +122,8 @@ func TestCustomerCarCreate(t *testing.T) {
 				// For validation errors, the exact message from Gin can be complex.
 				// We might only check if an "error" key exists for BadRequest.
 				if tt.expectedStatus == http.StatusBadRequest {
-					assert.Contains(t, gotBody, "error", "Error key missing for BadRequest")
+					assert.Contains(t, gotBody, "code", "Code key missing for BadRequest")
+					assert.Contains(t, gotBody, "message", "Message key missing for BadRequest")
 				} else {
 					expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
 					var expectedBodyMap map[string]interface{}
@@ -136,8 +138,9 @@ func TestCustomerCarCreate(t *testing.T) {
 				// ensure there's some error message.
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
-				assert.Contains(t, gotBody, "error", "Error key missing for BadRequest without specific body")
-				assert.NotEmpty(t, gotBody["error"], "Error message should not be empty for BadRequest")
+				assert.Contains(t, gotBody, "code", "Code key missing for BadRequest without specific body")
+				assert.Contains(t, gotBody, "message", "Message key missing for BadRequest without specific body")
+				assert.NotEmpty(t, gotBody["message"], "Error message should not be empty for BadRequest")
 			}
 		})
 	}
@@ -182,7 +185,8 @@ func TestCustomerCarGetByID(t *testing.T) {
 			},
 			expectedStatus: http.StatusNotFound,
 			expectedBody: gin.H{
-				"error": "Customer car relationship not found",
+				"code": "not_found",
+				"message": "Customer car relationship not found",
 			},
 		},
 	}
@@ -270,7 +274,8 @@ func TestCustomerCarGetAll(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "Failed to get customer car relationships",
+				"code": "internal_error",
+				"message": "Failed to get customer car relationships",
 			},
 		},
 	}
@@ -362,7 +367,8 @@ func TestCustomerCarGetByCustomerID(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "Failed to get customer car relationships",
+				"code": "internal_error",
+				"message": "Failed to get customer car relationships",
 			},
 		},
 	}
@@ -454,7 +460,8 @@ func TestCustomerCarGetByCarID(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "Failed to get customer car relationships",
+				"code": "internal_error",
+				"message": "Failed to get customer car relationships",
 			},
 		},
 	}
@@ -569,7 +576,8 @@ func TestCustomerCarUpdate(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "database error",
+				"code": "internal_error",
+				"message": "database error",
 			},
 		},
 	}
@@ -612,7 +620,8 @@ func TestCustomerCarUpdate(t *testing.T) {
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
 				if tt.expectedStatus == http.StatusBadRequest {
-					assert.Contains(t, gotBody, "error", "Error key missing for BadRequest")
+					assert.Contains(t, gotBody, "code", "Code key missing for BadRequest")
+					assert.Contains(t, gotBody, "message", "Message key missing for BadRequest")
 				} else {
 					expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
 					var expectedBodyMap map[string]interface{}
@@ -624,8 +633,9 @@ func TestCustomerCarUpdate(t *testing.T) {
 			} else if tt.expectedStatus == http.StatusBadRequest {
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
-				assert.Contains(t, gotBody, "error", "Error key missing for BadRequest without specific body")
-				assert.NotEmpty(t, gotBody["error"], "Error message should not be empty for BadRequest")
+				assert.Contains(t, gotBody, "code", "Code key missing for BadRequest without specific body")
+				assert.Contains(t, gotBody, "message", "Message key missing for BadRequest without specific body")
+				assert.NotEmpty(t, gotBody["message"], "Error message should not be empty for BadRequest")
 			}
 		})
 	}
@@ -666,7 +676,8 @@ func TestCustomerCarDelete(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "database error",
+				"code": "internal_error",
+				"message": "database error",
 			},
 		},
 	}

@@ -1,4 +1,4 @@
-basePath: /
+basePath: /v1
 definitions:
   model.Car:
     properties:
@@ -36,32 +36,41 @@ definitions:
   model.Customer:
     properties:
       address:
+        description: Address of the customer
         example: 123 Main St, Anytown, USA
         type: string
       created_at:
+        description: Timestamp of when the customer was created
         example: "2023-01-15T10:30:00Z"
         format: date-time
         type: string
       created_by:
+        description: Identifier of the user/process that created the customer
         example: system_user
         type: string
       email:
+        description: Email address of the customer
         example: john.doe@example.com
         type: string
       id:
+        description: Unique identifier for the customer
         example: cust_01H7ZCN4X8X5X8X5X8X5X8X5X8
         type: string
       name:
+        description: Name of the customer
         example: John Doe
         type: string
       phone:
+        description: Phone number of the customer (optional)
         example: 555-123-4567
         type: string
       updated_at:
+        description: Timestamp of when the customer was last updated
         example: "2023-01-16T11:00:00Z"
         format: date-time
         type: string
       updated_by:
+        description: Identifier of the user/process that last updated the customer
         example: system_user
         type: string
     required:
@@ -71,13 +80,40 @@ definitions:
     type: object
   model.ErrorResponse:
     properties:
-      error:
-        example: Error message description
+      code:
+        description: Error code for programmatic handling
+        example: NOT_FOUND
         type: string
+      message:
+        description: Human-readable error description
+        example: Resource not found
+        type: string
+    type: object
+  model.PaginatedResponse:
+    properties:
+      data:
+        description: List of items
+      page:
+        description: Current page number
+        example: 1
+        type: integer
+      page_size:
+        description: Number of items per page
+        example: 10
+        type: integer
+      total_count:
+        description: Total number of items
+        example: 100
+        type: integer
+      total_pages:
+        description: Total number of pages
+        example: 10
+        type: integer
     type: object
   model.SuccessResponse:
     properties:
       message:
+        description: Success message
         example: Operation successful
         type: string
     type: object
@@ -123,8 +159,8 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: RESTful API for managing customer and supplier data in the GoodsChain
-    system.
+  description: RESTful API for managing customer, supplier, car, and customer-car relationship
+    data in the GoodsChain system.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -132,6 +168,23 @@ info:
   title: GoodsChain Backend System
   version: "1.0"
 paths:
+  /health:
+    get:
+      description: Check if the API is up and running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: API is healthy
+          schema:
+            properties:
+              status:
+                example: UP
+                type: string
+            type: object
+      summary: Health check endpoint
+      tags:
+      - Health
   /cars:
     get:
       description: Retrieves a list of all cars in the system.
@@ -295,8 +348,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Adds a new customer to the system. The ID is auto-generated if
-        not provided.
+      description: Adds a new customer to the system. The ID is auto-generated if not
+        provided.
       parameters:
       - description: Customer object to be created
         in: body
@@ -436,8 +489,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Adds a new supplier to the system. The ID is auto-generated if
-        not provided.
+      description: Adds a new supplier to the system. The ID is auto-generated if not
+        provided.
       parameters:
       - description: Supplier object to be created
         in: body

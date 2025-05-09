@@ -103,7 +103,8 @@ func TestCreateSupplier(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "database error",
+				"code": "internal_error",
+				"message": "database error",
 			},
 		},
 	}
@@ -147,7 +148,8 @@ func TestCreateSupplier(t *testing.T) {
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
 
 				if tt.expectedStatus == http.StatusBadRequest {
-					assert.Contains(t, gotBody, "error", "Error key missing for BadRequest")
+					assert.Contains(t, gotBody, "code", "Code key missing for BadRequest")
+					assert.Contains(t, gotBody, "message", "Message key missing for BadRequest")
 				} else {
 					expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
 					var expectedBodyMap map[string]interface{}
@@ -160,8 +162,9 @@ func TestCreateSupplier(t *testing.T) {
 			} else if tt.expectedStatus == http.StatusBadRequest {
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
-				assert.Contains(t, gotBody, "error", "Error key missing for BadRequest without specific body")
-				assert.NotEmpty(t, gotBody["error"], "Error message should not be empty for BadRequest")
+				assert.Contains(t, gotBody, "code", "Code key missing for BadRequest without specific body")
+				assert.Contains(t, gotBody, "message", "Message key missing for BadRequest without specific body")
+				assert.NotEmpty(t, gotBody["message"], "Error message should not be empty for BadRequest")
 			}
 		})
 	}
@@ -206,7 +209,8 @@ func TestGetSupplier(t *testing.T) {
 			},
 			expectedStatus: http.StatusNotFound,
 			expectedBody: gin.H{
-				"error": "Supplier not found",
+				"code": "not_found",
+				"message": "Supplier not found",
 			},
 		},
 	}
@@ -326,7 +330,8 @@ func TestUpdateSupplier(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "database error",
+				"code": "internal_error",
+				"message": "database error",
 			},
 		},
 	}
@@ -369,7 +374,8 @@ func TestUpdateSupplier(t *testing.T) {
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
 				if tt.expectedStatus == http.StatusBadRequest {
-					assert.Contains(t, gotBody, "error", "Error key missing for BadRequest")
+					assert.Contains(t, gotBody, "code", "Code key missing for BadRequest")
+					assert.Contains(t, gotBody, "message", "Message key missing for BadRequest")
 				} else {
 					expectedBodyBytes, _ := json.Marshal(tt.expectedBody)
 					var expectedBodyMap map[string]interface{}
@@ -381,8 +387,9 @@ func TestUpdateSupplier(t *testing.T) {
 			} else if tt.expectedStatus == http.StatusBadRequest {
 				var gotBody map[string]interface{}
 				json.Unmarshal(w.Body.Bytes(), &gotBody)
-				assert.Contains(t, gotBody, "error", "Error key missing for BadRequest without specific body")
-				assert.NotEmpty(t, gotBody["error"], "Error message should not be empty for BadRequest")
+				assert.Contains(t, gotBody, "code", "Code key missing for BadRequest without specific body")
+				assert.Contains(t, gotBody, "message", "Message key missing for BadRequest without specific body")
+				assert.NotEmpty(t, gotBody["message"], "Error message should not be empty for BadRequest")
 			}
 		})
 	}
@@ -423,7 +430,8 @@ func TestDeleteSupplier(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "database error",
+				"code": "internal_error",
+				"message": "database error",
 			},
 		},
 	}
@@ -517,7 +525,8 @@ func TestGetAllSuppliers(t *testing.T) {
 			},
 			expectedStatus: http.StatusInternalServerError,
 			expectedBody: gin.H{
-				"error": "Failed to retrieve suppliers",
+				"code": "internal_error",
+				"message": "Failed to retrieve suppliers",
 			},
 		},
 	}

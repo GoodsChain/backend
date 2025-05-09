@@ -34,12 +34,12 @@ func NewCustomerCarHandler(customerCarUsecase usecase.CustomerCarUsecase) *Custo
 func (h *CustomerCarHandler) Create(c *gin.Context) {
 	var customerCar model.CustomerCar
 	if err := c.ShouldBindJSON(&customerCar); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
 	if err := h.CustomerCarUsecase.CreateCustomerCar(&customerCar); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 
@@ -62,7 +62,7 @@ func (h *CustomerCarHandler) GetByID(c *gin.Context) {
 
 	customerCar, err := h.CustomerCarUsecase.GetCustomerCar(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, model.ErrorResponse{Error: "Customer car relationship not found"})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Code: "not_found", Message: "Customer car relationship not found"})
 		return
 	}
 
@@ -81,7 +81,7 @@ func (h *CustomerCarHandler) GetByID(c *gin.Context) {
 func (h *CustomerCarHandler) GetAll(c *gin.Context) {
 	customerCars, err := h.CustomerCarUsecase.GetAllCustomerCars()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Failed to get customer car relationships"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: "Failed to get customer car relationships"})
 		return
 	}
 
@@ -103,7 +103,7 @@ func (h *CustomerCarHandler) GetByCustomerID(c *gin.Context) {
 
 	customerCars, err := h.CustomerCarUsecase.GetCustomerCarsByCustomerID(customerID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Failed to get customer car relationships"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: "Failed to get customer car relationships"})
 		return
 	}
 
@@ -125,7 +125,7 @@ func (h *CustomerCarHandler) GetByCarID(c *gin.Context) {
 
 	customerCars, err := h.CustomerCarUsecase.GetCustomerCarsByCarID(carID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Failed to get customer car relationships"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: "Failed to get customer car relationships"})
 		return
 	}
 
@@ -150,12 +150,12 @@ func (h *CustomerCarHandler) Update(c *gin.Context) {
 	
 	var customerCar model.CustomerCar
 	if err := c.ShouldBindJSON(&customerCar); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
 	if err := h.CustomerCarUsecase.UpdateCustomerCar(id, &customerCar); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 
@@ -177,7 +177,7 @@ func (h *CustomerCarHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := h.CustomerCarUsecase.DeleteCustomerCar(id); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 

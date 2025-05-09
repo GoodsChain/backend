@@ -35,7 +35,7 @@ func NewCarHandler(uc usecase.CarUsecase) *CarHandler {
 func (h *CarHandler) CreateCar(c *gin.Context) {
 	var car model.Car
 	if err := c.ShouldBindJSON(&car); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
@@ -47,7 +47,7 @@ func (h *CarHandler) CreateCar(c *gin.Context) {
 	if err := h.carUsecase.CreateCar(&car); err != nil {
 		// TODO: Differentiate between error types from usecase if necessary
 		// e.g., if err == usecase.ErrSupplierNotFound (if validating supplier ID)
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, car)
@@ -68,10 +68,10 @@ func (h *CarHandler) GetCar(c *gin.Context) {
 	car, err := h.carUsecase.GetCar(id)
 	if err != nil {
 		if err == repository.ErrNotFound { // Assuming usecase bubbles up repository.ErrNotFound
-			c.JSON(http.StatusNotFound, model.ErrorResponse{Error: "Car not found"})
+			c.JSON(http.StatusNotFound, model.ErrorResponse{Code: "not_found", Message: "Car not found"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, car)
@@ -88,7 +88,7 @@ func (h *CarHandler) GetCar(c *gin.Context) {
 func (h *CarHandler) GetAllCars(c *gin.Context) {
 	cars, err := h.carUsecase.GetAllCars()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Failed to retrieve cars"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: "Failed to retrieve cars"})
 		return
 	}
 	c.JSON(http.StatusOK, cars)
@@ -111,7 +111,7 @@ func (h *CarHandler) UpdateCar(c *gin.Context) {
 	id := c.Param("id")
 	var car model.Car
 	if err := c.ShouldBindJSON(&car); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
@@ -120,10 +120,10 @@ func (h *CarHandler) UpdateCar(c *gin.Context) {
 
 	if err := h.carUsecase.UpdateCar(id, &car); err != nil {
 		if err == repository.ErrNotFound { // Assuming usecase bubbles up repository.ErrNotFound
-			c.JSON(http.StatusNotFound, model.ErrorResponse{Error: "Car not found"})
+			c.JSON(http.StatusNotFound, model.ErrorResponse{Code: "not_found", Message: "Car not found"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, model.SuccessResponse{Message: "Car updated successfully"})
@@ -143,10 +143,10 @@ func (h *CarHandler) DeleteCar(c *gin.Context) {
 	id := c.Param("id")
 	if err := h.carUsecase.DeleteCar(id); err != nil {
 		if err == repository.ErrNotFound { // Assuming usecase bubbles up repository.ErrNotFound
-			c.JSON(http.StatusNotFound, model.ErrorResponse{Error: "Car not found"})
+			c.JSON(http.StatusNotFound, model.ErrorResponse{Code: "not_found", Message: "Car not found"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, model.SuccessResponse{Message: "Car deleted successfully"})

@@ -76,7 +76,14 @@ func TestCarHandler_CreateCar(t *testing.T) {
 		router.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
-		// Check error response if needed
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code", "Code key missing for BadRequest")
+		assert.Contains(t, errResp, "message", "Message key missing for BadRequest")
+		assert.NotEmpty(t, errResp["message"], "Error message should not be empty for BadRequest")
 	})
 
 	t.Run("UsecaseError", func(t *testing.T) {
@@ -90,7 +97,15 @@ func TestCarHandler_CreateCar(t *testing.T) {
 		router.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
-		// Check error response
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "internal_error", errResp["code"])
+		assert.Equal(t, "usecase create error", errResp["message"])
 	})
 }
 
@@ -119,6 +134,15 @@ func TestCarHandler_GetCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusNotFound, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "not_found", errResp["code"])
+		assert.Equal(t, "Car not found", errResp["message"])
 	})
 
 	t.Run("UsecaseError", func(t *testing.T) {
@@ -127,6 +151,14 @@ func TestCarHandler_GetCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "internal_error", errResp["code"])
 	})
 }
 
@@ -169,6 +201,15 @@ func TestCarHandler_GetAllCars(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "internal_error", errResp["code"])
+		assert.Equal(t, "Failed to retrieve cars", errResp["message"])
 	})
 }
 
@@ -200,6 +241,14 @@ func TestCarHandler_UpdateCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code", "Code key missing for BadRequest")
+		assert.Contains(t, errResp, "message", "Message key missing for BadRequest")
+		assert.NotEmpty(t, errResp["message"], "Error message should not be empty for BadRequest")
 	})
 
 	t.Run("NotFound", func(t *testing.T) {
@@ -210,6 +259,15 @@ func TestCarHandler_UpdateCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusNotFound, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "not_found", errResp["code"])
+		assert.Equal(t, "Car not found", errResp["message"])
 	})
 	
 	t.Run("UsecaseError", func(t *testing.T) {
@@ -220,6 +278,15 @@ func TestCarHandler_UpdateCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "internal_error", errResp["code"])
+		assert.Equal(t, "update failed badly", errResp["message"])
 	})
 }
 
@@ -245,6 +312,15 @@ func TestCarHandler_DeleteCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusNotFound, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "not_found", errResp["code"])
+		assert.Equal(t, "Car not found", errResp["message"])
 	})
 
 	t.Run("UsecaseError", func(t *testing.T) {
@@ -253,5 +329,14 @@ func TestCarHandler_DeleteCar(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router.ServeHTTP(rr, req)
 		assert.Equal(t, http.StatusInternalServerError, rr.Code)
+		
+		// Check error response format
+		var errResp map[string]interface{}
+		err := json.Unmarshal(rr.Body.Bytes(), &errResp)
+		assert.NoError(t, err)
+		assert.Contains(t, errResp, "code")
+		assert.Contains(t, errResp, "message")
+		assert.Equal(t, "internal_error", errResp["code"])
+		assert.Equal(t, "delete failed badly", errResp["message"])
 	})
 }

@@ -32,7 +32,7 @@ func NewSupplierHandler(supplierUsecase usecase.SupplierUsecase) *SupplierHandle
 func (h *SupplierHandler) CreateSupplier(c *gin.Context) {
 	var supplier model.Supplier
 	if err := c.ShouldBindJSON(&supplier); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
@@ -42,7 +42,7 @@ func (h *SupplierHandler) CreateSupplier(c *gin.Context) {
 	}
 
 	if err := h.supplierUsecase.CreateSupplier(&supplier); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 
@@ -63,7 +63,7 @@ func (h *SupplierHandler) GetSupplier(c *gin.Context) {
 	id := c.Param("id")
 	supplier, err := h.supplierUsecase.GetSupplier(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, model.ErrorResponse{Error: "Supplier not found"})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Code: "not_found", Message: "Supplier not found"})
 		return
 	}
 	c.JSON(http.StatusOK, supplier)
@@ -86,12 +86,12 @@ func (h *SupplierHandler) UpdateSupplier(c *gin.Context) {
 	id := c.Param("id")
 	var supplier model.Supplier
 	if err := c.ShouldBindJSON(&supplier); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
 	if err := h.supplierUsecase.UpdateSupplier(id, &supplier); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 
@@ -111,7 +111,7 @@ func (h *SupplierHandler) UpdateSupplier(c *gin.Context) {
 func (h *SupplierHandler) DeleteSupplier(c *gin.Context) {
 	id := c.Param("id")
 	if err := h.supplierUsecase.DeleteSupplier(id); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, model.SuccessResponse{Message: "Supplier deleted successfully"})
@@ -128,7 +128,7 @@ func (h *SupplierHandler) DeleteSupplier(c *gin.Context) {
 func (h *SupplierHandler) GetAllSuppliers(c *gin.Context) {
 	suppliers, err := h.supplierUsecase.GetAllSuppliers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Failed to retrieve suppliers"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: "Failed to retrieve suppliers"})
 		return
 	}
 	c.JSON(http.StatusOK, suppliers)

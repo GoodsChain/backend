@@ -34,7 +34,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	// Note: For request, ID, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy are typically ignored or server-set.
 	// The model.Customer is used here for simplicity; a dedicated CreateCustomerRequest struct could be used.
 	if err := c.ShouldBindJSON(&customer); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
@@ -44,7 +44,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	}
 
 	if err := h.customerUsecase.CreateCustomer(&customer); err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 
@@ -67,7 +67,7 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 	if err != nil {
 		// Assuming GetCustomer returns a specific error type that can be checked for "not found"
 		// For now, using the existing logic which might be improved in usecase layer.
-		c.JSON(http.StatusNotFound, model.ErrorResponse{Error: "Customer not found"})
+		c.JSON(http.StatusNotFound, model.ErrorResponse{Code: "not_found", Message: "Customer not found"})
 		return
 	}
 	c.JSON(http.StatusOK, customer)
@@ -92,7 +92,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	// Note: For request, ID, CreatedAt, CreatedBy, UpdatedAt, UpdatedBy are typically ignored or server-set.
 	// The model.Customer is used here for simplicity; a dedicated UpdateCustomerRequest struct could be used.
 	if err := c.ShouldBindJSON(&customer); err != nil {
-		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Code: "invalid_request", Message: err.Error()})
 		return
 	}
 
@@ -101,7 +101,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	if err := h.customerUsecase.UpdateCustomer(id, &customer); err != nil {
 		// This could be a not found error or other internal error.
 		// Usecase should return distinguishable errors.
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 
@@ -122,7 +122,7 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	id := c.Param("id")
 	if err := h.customerUsecase.DeleteCustomer(id); err != nil {
 		// Usecase should return distinguishable errors for not found vs internal.
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, model.SuccessResponse{Message: "Customer deleted successfully"})
@@ -139,7 +139,7 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 func (h *CustomerHandler) GetAllCustomers(c *gin.Context) {
 	customers, err := h.customerUsecase.GetAllCustomers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: "Failed to retrieve customers"})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Code: "internal_error", Message: "Failed to retrieve customers"})
 		return
 	}
 	c.JSON(http.StatusOK, customers)
