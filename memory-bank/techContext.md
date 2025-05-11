@@ -20,6 +20,13 @@
 - Business logic must be encapsulated in usecase layer
 - Handler layer must remain thin, focusing only on HTTP concerns
 
+## Operational Details
+- **Request Tracking**: Implemented through middleware with X-Request-ID header
+- **Connection Pooling**: Configured via sqlx with max open/idle connections and lifetime
+- **Graceful Shutdown**: Handles SIGINT/SIGTERM with configurable timeout
+- **API Versioning**: Implemented through router groups (e.g., /v1 prefix)
+- **Configuration**: Centralized config with environment variable fallbacks
+
 ## Key Dependencies
 - github.com/gin-gonic/gin - Web framework
 - github.com/jmoiron/sqlx - Database interaction
@@ -31,8 +38,11 @@
 - github.com/swaggo/swag - Swagger core library and CLI tool
 
 ## Tool Usage Patterns
-- `make run` - Start the development server
-- `go run main.go` - Directly run the application
+- `make run` - Directly run the application
+- `make db` - Create PostgreSQL database docker container
+- `make migrate-up` - Apply database migration
+- `make mock` - Generate mock for testing
+- `make test` - Run unit test
 - `swag init` - Generate/update Swagger API documentation
 - Proper error handling with context propagation
 - Structured logging implemented using `zerolog`

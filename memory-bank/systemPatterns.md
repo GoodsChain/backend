@@ -24,6 +24,10 @@ The system implements Clean Architecture principles with a clear separation of c
 3. **Error Handling** - Consistent error responses with appropriate HTTP status codes
 4. **Validation** - Input validation at handler layer before business logic execution
 5. **Graceful Shutdown** - Proper signal handling and resource cleanup during application termination
+6. **API Versioning** - Implemented through router groups (e.g., /v1 prefix)
+7. **Request Tracking** - Request IDs propagated through the system for observability
+8. **Connection Pooling** - Configurable database connection pooling parameters
+9. **Middleware Organization** - Global middleware registered at engine level, route-specific at group level
 
 ## Component Relationships
 - Handler depends on Usecase interfaces
